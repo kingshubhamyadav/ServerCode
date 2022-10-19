@@ -90,3 +90,5 @@ C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\ne
 C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\MailKit.dll
 C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\MimeKit.dll
 C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\BouncyCastle.Crypto.dll
+C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\AutoMapper.dll
+C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
