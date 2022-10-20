@@ -5,7 +5,7 @@ using OnDemandCarWash.Dtos;
 using OnDemandCarWash.Models;
 using OnDemandCarWash.Services;
 
-namespace OnDemandCarWash.Context
+namespace OnDemandCarWash.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -16,8 +16,8 @@ namespace OnDemandCarWash.Context
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
-
-        [HttpGet("{id}")]
+        #region View-ProfileMethod
+        [HttpGet("view-profile/{id}")]
         public async Task<ActionResult<WasherProfileDto>> GetWasherById(int id)
         {
             var res = await _service.GetWasherAsync(id);
@@ -27,8 +27,9 @@ namespace OnDemandCarWash.Context
             }
             return Ok(res);
         }
-
-        [HttpPut("{id}")]
+        #endregion
+        #region Edit-ProfileMethod
+        [HttpPut("edit-profile/{id}")]
         public async Task<ActionResult> UpdateWasher(int id, WasherProfileDto washer)
         {
 
@@ -40,5 +41,6 @@ namespace OnDemandCarWash.Context
             return Ok("Success!");
 
         }
+        #endregion
     }
 }

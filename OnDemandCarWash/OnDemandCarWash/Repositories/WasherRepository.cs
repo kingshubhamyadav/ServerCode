@@ -17,6 +17,8 @@ namespace OnDemandCarWash.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
+
+        #region GetWasherMethod
         public async Task<ActionResult<WasherProfileDto>> GetWasherAsync(int id)
         {
             try
@@ -39,7 +41,10 @@ namespace OnDemandCarWash.Repositories
             }
 
         }
+        #endregion
 
+
+        #region UpdateWasherMethod
         public async Task<ActionResult<User>> UpdateWasherAsync(int id, WasherProfileDto washer)
         {
             try
@@ -64,7 +69,9 @@ namespace OnDemandCarWash.Repositories
             }
 
         }
+        #endregion
 
+        #region CheckWasherExistMethod
         public async Task<bool> WasherExistsAsync(int id)
         {
             try
@@ -81,5 +88,6 @@ namespace OnDemandCarWash.Repositories
 
             }
         }
+        #endregion
     }
 }
