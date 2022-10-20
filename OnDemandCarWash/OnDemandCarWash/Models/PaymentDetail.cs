@@ -4,6 +4,7 @@ namespace OnDemandCarWash.Models
 {
     public class PaymentDetail
     {
+        [Key]
         public int paymentId { get; set; }
         public int transactionId { get; set; }
         public string paidAmount { get; set; }
@@ -15,9 +16,9 @@ namespace OnDemandCarWash.Models
         public string timeStamp { get; set; }
 
         //navigation property
-        public virtual Order Orders { get; set; }
+        //public virtual Order Orders { get; set; }
 
-        public virtual Promocode Promocodes { get; set; }
+        //public virtual Promocode Promocodes { get; set; }
 
 
   }

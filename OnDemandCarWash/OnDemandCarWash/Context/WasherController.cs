@@ -21,7 +21,7 @@ namespace OnDemandCarWash.Context
         public async Task<ActionResult<WasherProfileDto>> GetWasherById(int id)
         {
             var res = await _service.GetWasherAsync(id);
-            if(res == null)
+            if (res == null)
             {
                 return NotFound();
             }
@@ -29,11 +29,11 @@ namespace OnDemandCarWash.Context
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateWasher(int id,WasherProfileDto washer)
+        public async Task<ActionResult> UpdateWasher(int id, WasherProfileDto washer)
         {
 
             var res = await _service.UpdateWasherAsync(id, washer);
-            if(res == null)
+            if (res == null)
             {
                 return NotFound();
             }

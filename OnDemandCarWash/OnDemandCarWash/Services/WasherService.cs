@@ -18,9 +18,9 @@ namespace OnDemandCarWash.Services
             return await _repo.GetWasherAsync(id);
         }
 
-        public async Task<ActionResult<User>> UpdateWasherAsync(int id,WasherProfileDto washer)
+        public async Task<ActionResult<User>> UpdateWasherAsync(int id, WasherProfileDto washer)
         {
-            if(!await _repo.WasherExistsAsync(id))
+            if (!await _repo.WasherExistsAsync(id))
             {
                 return null;
             }

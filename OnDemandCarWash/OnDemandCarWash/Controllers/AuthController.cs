@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OnDemandCarWash.Context;
 using OnDemandCarWash.Dtos;
+using OnDemandCarWash.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -13,22 +16,38 @@ namespace OnDemandCarWash.Controllers
     public class AuthController : Controller
     {
         //context
-        public static User user = new User();
-        private readonly IConfiguration _configuration;
+       // public static User user = new User();
+        private  CarWashDbContext _context;
 
-        //constructor for getting appseeting token string 
-        public AuthController(IConfiguration configuration)
+        public AuthController(CarWashDbContext context, IConfiguration configuration)//constructor for getting appseeting token string IConfiguration
         {
+            _context = context;
             _configuration = configuration;
         }
+        private readonly IConfiguration _configuration;
+       
         //Register
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto request)
         {
+            
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            user.Username = request.Username;
+
+            var user = new User();
+            user.Username= request.Username;
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
+            user.firstName = "subham";
+            user.lastName = "yadav";
+            user.email = "email";
+            user.phone = "345";
+            user.role = "User";
+            user.img = "asad";
+            user.status = "Available";
+            user.timeStamp = "6/6/2022";
+ 
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             return Ok(user);
            
         }
@@ -46,17 +65,18 @@ namespace OnDemandCarWash.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserDto request)
         {
-            if (user.Username != request.Username)
+            var users = await _context.Users.FirstOrDefaultAsync(x => x.Username == request.Username);
+            if (users == null)
             {
                 return BadRequest("User not found");
             }
-            if(!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            if(!VerifyPasswordHash(request.Password, users.PasswordHash, users.PasswordSalt))
             {
                 return BadRequest("wrong password");
             }
 
             // token will be passed
-            string token = CreateToken(user);
+            string token = CreateToken(users);
             return Ok(token);
         }
 

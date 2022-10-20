@@ -4,6 +4,7 @@ namespace OnDemandCarWash.Models
 {
     public class CarDetail
     {
+        [Key]
         public int orderId { get; set; }
         public string carNumber { get; set; }
         public string carType { get; set; }
@@ -11,6 +12,6 @@ namespace OnDemandCarWash.Models
         public string timeStamp { get; set; }
 
         //navigation property
-        public virtual Order Orders { get; set; }
+        //public virtual Order Orders { get; set; }
     }
 }

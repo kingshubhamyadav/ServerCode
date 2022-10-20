@@ -17,10 +17,10 @@ namespace OnDemandCarWash.Models
         public string timeStamp { get; set; }
 
         //Navigation Property
-        public virtual User User { get; set; }
-        public virtual CarDetail CarDetail { get; set; }
-        public virtual AfterWash AfterWash { get; set; }
-        public virtual WashType WashTypes { get; set; }
-        public virtual List<PaymentDetail> PaymentDetails { get; set; }
+        //public virtual User User { get; set; }
+        //public virtual CarDetail CarDetail { get; set; }
+        //public virtual AfterWash AfterWash { get; set; }
+        //public virtual WashType WashTypes { get; set; }
+        //public virtual List<PaymentDetail> PaymentDetails { get; set; }
     }
 }

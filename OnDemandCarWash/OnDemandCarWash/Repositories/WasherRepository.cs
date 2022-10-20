@@ -37,7 +37,7 @@ namespace OnDemandCarWash.Repositories
             {
 
             }
-         
+
         }
 
         public async Task<ActionResult<User>> UpdateWasherAsync(int id, WasherProfileDto washer)
@@ -53,7 +53,7 @@ namespace OnDemandCarWash.Repositories
                 await _context.SaveChangesAsync();
                 return user;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error occurred at UpdateWasher in WasherService");
                 return null;
@@ -71,7 +71,7 @@ namespace OnDemandCarWash.Repositories
             {
                 return await _context.Users.AnyAsync(user => user.userId == id); //returns true or false
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error occurred at WasherExists in WasherService");
                 return false;
