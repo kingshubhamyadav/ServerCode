@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿
 
 namespace OnDemandCarWash.Models
 {
@@ -11,7 +10,7 @@ namespace OnDemandCarWash.Models
         public string line1 { get; set; }
         public string line2 { get; set; }
         public string pincode { get; set; }
-        public string city { get; set; }
+        public string city { get; set; } 
         public string state { get; set; }
         public string timeStamp { get; set; }
 

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace OnDemandCarWash.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles ="Admin")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -17,7 +19,7 @@ namespace OnDemandCarWash.Controllers
         {
             _logger = logger;
         }
-
+        //AllowAnonymous can be used
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Toshiba\\Desktop\\ServerCode\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj": {}
+    "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Toshiba\\Desktop\\ServerCode\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj": {
+    "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Toshiba\\Desktop\\ServerCode\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
+        "projectUniqueName": "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
         "projectName": "OnDemandCarWash",
-        "projectPath": "C:\\Users\\Toshiba\\Desktop\\ServerCode\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
-        "packagesPath": "C:\\Users\\Toshiba\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Toshiba\\Desktop\\ServerCode\\OnDemandCarWash\\OnDemandCarWash\\obj\\",
+        "projectPath": "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
+        "packagesPath": "C:\\Users\\RESPECT\\.nuget\\packages\\",
+        "outputPath": "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Toshiba\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\RESPECT\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -49,6 +48,10 @@
               "target": "Package",
               "version": "[3.4.1, )"
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[6.0.10, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.10, )"
@@ -66,6 +69,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
+            },
+            "Swashbuckle.AspNetCore.Filters": {
+              "target": "Package",
+              "version": "[7.0.5, )"
             }
           },
           "imports": [
@@ -87,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }
