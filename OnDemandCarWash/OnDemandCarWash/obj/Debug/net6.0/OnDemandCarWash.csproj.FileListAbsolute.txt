@@ -137,3 +137,8 @@ C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\ne
 C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 D:\cap\core\caseStudy\webAPi\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\AutoMapper.dll
 D:\cap\core\caseStudy\webAPi\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\Scrutor.dll
+C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.dll
+C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll

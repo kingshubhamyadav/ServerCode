@@ -26,5 +26,10 @@ namespace OnDemandCarWash.Services
             }
             return await _repo.UpdateWasherAsync(id, washer);
         }
+
+        public async Task<IEnumerable<Order>> GetWasherRequestsAsync()
+        {
+            return await _repo.GetWasherRequestsAsync();
+        }
     }
 }

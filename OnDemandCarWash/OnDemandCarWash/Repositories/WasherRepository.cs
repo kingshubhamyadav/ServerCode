@@ -17,6 +17,8 @@ namespace OnDemandCarWash.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
+
+        #region GetWasherMethod
         public async Task<ActionResult<WasherProfileDto>> GetWasherAsync(int id)
         {
             try
@@ -30,7 +32,7 @@ namespace OnDemandCarWash.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error occurred at GetWasher in WasherService");
+                Console.WriteLine("Error occurred at GetWasher in WasherRepo");
                 return null;
             }
             finally
@@ -39,7 +41,10 @@ namespace OnDemandCarWash.Repositories
             }
 
         }
+        #endregion
 
+
+        #region UpdateWasherMethod
         public async Task<ActionResult<User>> UpdateWasherAsync(int id, WasherProfileDto washer)
         {
             try
@@ -55,7 +60,7 @@ namespace OnDemandCarWash.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error occurred at UpdateWasher in WasherService");
+                Console.WriteLine("Error occurred at UpdateWasher in WasherRepo");
                 return null;
             }
             finally
@@ -64,7 +69,9 @@ namespace OnDemandCarWash.Repositories
             }
 
         }
+        #endregion
 
+        #region CheckWasherExistMethod
         public async Task<bool> WasherExistsAsync(int id)
         {
             try
@@ -73,7 +80,7 @@ namespace OnDemandCarWash.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error occurred at WasherExists in WasherService");
+                Console.WriteLine("Error occurred at WasherExists in WasherRepo");
                 return false;
             }
             finally
@@ -81,5 +88,34 @@ namespace OnDemandCarWash.Repositories
 
             }
         }
+        #endregion
+
+        #region GetWasherRequestsMethod
+        public async Task<IEnumerable<Order>> GetWasherRequestsAsync()
+        {
+            try
+            {
+                var requests = (from a in _context.Orders
+                                join b in _context.Users on a.userId equals b.userId
+                                where (a.orderStatus == "PENDING")
+                                select a).ToList();
+                //var requests = await _context.Orders.Where(x => x.orderStatus == "PENDING").ToListAsync();
+                if (requests == null)
+                {
+                    return null;
+                }
+                return requests;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occurred at WasherRequests in WasherRepo");
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
+        #endregion
     }
 }
