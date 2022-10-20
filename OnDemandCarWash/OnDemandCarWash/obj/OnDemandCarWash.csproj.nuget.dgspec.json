@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj": {}
+    "D:\\cap\\core\\New-CaseStudy\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj": {}
   },
   "projects": {
-    "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj": {
+    "D:\\cap\\core\\New-CaseStudy\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
+        "projectUniqueName": "D:\\cap\\core\\New-CaseStudy\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
         "projectName": "OnDemandCarWash",
-        "projectPath": "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
+        "projectPath": "D:\\cap\\core\\New-CaseStudy\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
         "packagesPath": "C:\\Users\\RESPECT\\.nuget\\packages\\",
-        "outputPath": "D:\\cap\\core\\caseStudy\\webAPi\\OnDemandCarWash\\OnDemandCarWash\\obj\\",
+        "outputPath": "D:\\cap\\core\\New-CaseStudy\\OnDemandCarWash\\OnDemandCarWash\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
