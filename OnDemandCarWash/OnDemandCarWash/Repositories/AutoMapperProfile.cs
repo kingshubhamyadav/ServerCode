@@ -8,8 +8,10 @@ namespace OnDemandCarWash.Repositories
     {
         public AutoMapperProfile()
         {
+            //CreateMap<Source, Destination>();
             CreateMap<Models.User, Dtos.WasherProfileDto>();
             CreateMap<WasherProfileDto, User>();
+            CreateMap<Order, WasherRequestsDto>();
         }
     }
 }

@@ -12,9 +12,11 @@ namespace OnDemandCarWash.Controllers
     public class WasherController : ControllerBase
     {
         private readonly WasherService _service;
+        private readonly IMapper _mapper;
         public WasherController(WasherService service, IMapper mapper)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
         #region View-ProfileMethod
         [HttpGet("view-profile/{id}")]
@@ -40,6 +42,18 @@ namespace OnDemandCarWash.Controllers
             }
             return Ok("Success!");
 
+        }
+        #endregion
+        #region GetRequestsMethod
+        [HttpGet("requests")]
+        public async Task<ActionResult<IEnumerable<WasherRequestsDto>>> GetWasherRequestsAsync()
+        {
+            var res = await _service.GetWasherRequestsAsync();
+            if(res == null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<IEnumerable<WasherRequestsDto>>(res));
         }
         #endregion
     }

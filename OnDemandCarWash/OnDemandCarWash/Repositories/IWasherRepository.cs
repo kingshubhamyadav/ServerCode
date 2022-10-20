@@ -9,5 +9,6 @@ namespace OnDemandCarWash.Repositories
         Task<bool> WasherExistsAsync(int id);
         Task<ActionResult<WasherProfileDto>> GetWasherAsync(int id);
         Task<ActionResult<User>> UpdateWasherAsync(int id, WasherProfileDto washer);
+        Task<IEnumerable<Order>> GetWasherRequestsAsync();
     }
 }

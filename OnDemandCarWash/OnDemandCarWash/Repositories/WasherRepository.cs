@@ -32,7 +32,7 @@ namespace OnDemandCarWash.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error occurred at GetWasher in WasherService");
+                Console.WriteLine("Error occurred at GetWasher in WasherRepo");
                 return null;
             }
             finally
@@ -60,7 +60,7 @@ namespace OnDemandCarWash.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error occurred at UpdateWasher in WasherService");
+                Console.WriteLine("Error occurred at UpdateWasher in WasherRepo");
                 return null;
             }
             finally
@@ -80,8 +80,36 @@ namespace OnDemandCarWash.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error occurred at WasherExists in WasherService");
+                Console.WriteLine("Error occurred at WasherExists in WasherRepo");
                 return false;
+            }
+            finally
+            {
+
+            }
+        }
+        #endregion
+
+        #region GetWasherRequestsMethod
+        public async Task<IEnumerable<Order>> GetWasherRequestsAsync()
+        {
+            try
+            {
+                var requests = (from a in _context.Orders
+                                join b in _context.Users on a.userId equals b.userId
+                                where (a.orderStatus == "PENDING")
+                                select a).ToList();
+                //var requests = await _context.Orders.Where(x => x.orderStatus == "PENDING").ToListAsync();
+                if (requests == null)
+                {
+                    return null;
+                }
+                return requests;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occurred at WasherRequests in WasherRepo");
+                return null;
             }
             finally
             {
