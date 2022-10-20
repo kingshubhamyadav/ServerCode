@@ -6,10 +6,10 @@ namespace OnDemandCarWash.Models
     {
         [Key]
         public int promoId { get; set; }
-        public int code { get; set; }
-        public string discount { get; set; }
-        public string status { get; set; }
-        public string timeStamp { get; set; }
+        public string code { get; set; }=String.Empty;
+        public string discount { get; set; } = String.Empty;
+        public string status { get; set; } = String.Empty;
+        public string timeStamp { get; set; } = String.Empty;
 
         //navigation properties
         //public virtual List<PaymentDetail> PaymentDetails { get; set; } 

@@ -16,7 +16,7 @@ namespace OnDemandCarWash.Models
         public string role { get; set; } = string.Empty;    
         public string img { get; set; } = string.Empty;
         // public string addressId { get; set; }
-        public string status { get; set; }=string.Empty;
+        public string status { get; set; } = string.Empty; //enum
         public string timeStamp { get; set; }= string.Empty;
 
         //Navigation property

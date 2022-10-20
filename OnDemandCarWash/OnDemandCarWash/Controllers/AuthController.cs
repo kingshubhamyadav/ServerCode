@@ -16,15 +16,14 @@ namespace OnDemandCarWash.Controllers
     public class AuthController : Controller
     {
         //context
-       // public static User user = new User();
         private  CarWashDbContext _context;
-
+        private readonly IConfiguration _configuration;
         public AuthController(CarWashDbContext context, IConfiguration configuration)//constructor for getting appseeting token string IConfiguration
         {
             _context = context;
             _configuration = configuration;
         }
-        private readonly IConfiguration _configuration;
+      
        
         //Register
         [HttpPost("register")]

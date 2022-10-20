@@ -6,15 +6,16 @@ namespace OnDemandCarWash.Models
     {
         [Key]
         public int orderId { get; set; }
-        public int userId { get; set; }//customer user id
-        public string washerUsesrId { get; set; }
-        public string timeOfWash { get; set; }
-        public string dateOfWash { get; set; }
-        public string location { get; set; }
-        public string washTypeId { get; set; }
-        public string rating { get; set; }
-        public string orderStatus { get; set; }
-        public string timeStamp { get; set; }
+        public int userId { get; set; } =0; //customer user id
+        public int washerUserId { get; set; } = 0;
+        public string code { get; set; }=String.Empty;//promocode
+        public string timeOfWash { get; set; } = String.Empty;
+        public string dateOfWash { get; set; } = String.Empty;
+        public string location { get; set; } = String.Empty;
+        public int washTypeId { get; set; } = 0;
+        public string rating { get; set; } = String.Empty;
+        public string orderStatus { get; set; } = String.Empty; //enum
+        public string timeStamp { get; set; } = String.Empty;
 
         //Navigation Property
         //public virtual User User { get; set; }
