@@ -41,8 +41,12 @@ builder.Services.AddSwaggerGen(options =>
         };
     });
 //email
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<EmailService,EmailService>();
+builder.Services.AddScoped<IWasherRepository, WasherRepository>();
+builder.Services.AddScoped<WasherService, WasherService>();
 //connect to sql
 builder.Services.AddDbContext<CarWashDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("Default")));

@@ -133,3 +133,5 @@ D:\cap\core\caseStudy\webAPi\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\Mi
 D:\cap\core\caseStudy\webAPi\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\Scrutor.dll
 D:\cap\core\caseStudy\webAPi\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.dll
 D:\cap\core\caseStudy\webAPi\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\AutoMapper.dll
+C:\Users\Toshiba\Desktop\ServerCode\OnDemandCarWash\OnDemandCarWash\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
