@@ -30,6 +30,7 @@ namespace OnDemandCarWash.Controllers
             return Ok(res);
         }
         #endregion
+
         #region Edit-ProfileMethod
         [HttpPut("edit-profile/{id}")]
         public async Task<ActionResult> UpdateWasher(int id, WasherProfileDto washer)
@@ -44,16 +45,56 @@ namespace OnDemandCarWash.Controllers
 
         }
         #endregion
+
         #region GetRequestsMethod
         [HttpGet("requests")]
         public async Task<ActionResult<IEnumerable<WasherRequestsDto>>> GetWasherRequestsAsync()
         {
             var res = await _service.GetWasherRequestsAsync();
-            if(res == null)
+            if (res == null || !res.Any())
             {
-                return NotFound();
+                return NotFound("No requests to display.");
             }
             return Ok(_mapper.Map<IEnumerable<WasherRequestsDto>>(res));
+        }
+        #endregion
+
+        #region WashCompleteMethod
+        [HttpPost("wash-complete")]
+        public async Task<ActionResult> AddAfterWashMethod(AfterWashDto request)
+        {
+            var res = await _service.AddAfterWashAsync(request);
+            if (res == null)
+            {
+                return BadRequest("Failure!");
+            }
+            return Ok("Success!");
+        }
+        #endregion
+
+        #region CurrentOrdersMethod
+        [HttpGet("current-orders")]
+        public async Task<ActionResult<IEnumerable<WasherRequestsDto>>> GetCurrentOrdersAsync()
+        {
+            var res = await _service.GetCurrentOrdersAsync();
+            if (res == null || !res.Any())
+            {
+                return NotFound("No Orders to display.");
+            }
+            return Ok(_mapper.Map<WasherRequestsDto>(res));
+        }
+        #endregion
+
+        #region PastOrdersMethod
+        [HttpGet("past-orders")]
+        public async Task<ActionResult<IEnumerable<WasherRequestsDto>>> GetPastOrdersAsync()
+        {
+            var res = await _service.GetPastOrdersAsync();
+            if (res == null || !res.Any())
+            {
+                return NotFound("No Orders to display.");
+            }
+            return Ok(_mapper.Map<WasherRequestsDto>(res));
         }
         #endregion
     }

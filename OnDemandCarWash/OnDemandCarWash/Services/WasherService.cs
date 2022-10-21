@@ -31,5 +31,20 @@ namespace OnDemandCarWash.Services
         {
             return await _repo.GetWasherRequestsAsync();
         }
+
+        public async Task<ActionResult<AfterWash>> AddAfterWashAsync(AfterWashDto request)
+        {
+            return await _repo.AddAfterWashAsync(request);
+        }
+
+        public async Task<IEnumerable<Order>> GetCurrentOrdersAsync()
+        {
+            return await _repo.GetCurrentOrdersAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetPastOrdersAsync()
+        {
+            return await _repo.GetPastOrdersAsync();
+        }
     }
 }

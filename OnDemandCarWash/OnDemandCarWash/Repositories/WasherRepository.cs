@@ -43,7 +43,6 @@ namespace OnDemandCarWash.Repositories
         }
         #endregion
 
-
         #region UpdateWasherMethod
         public async Task<ActionResult<User>> UpdateWasherAsync(int id, WasherProfileDto washer)
         {
@@ -95,11 +94,7 @@ namespace OnDemandCarWash.Repositories
         {
             try
             {
-                var requests = (from a in _context.Orders
-                                join b in _context.Users on a.userId equals b.userId
-                                where (a.orderStatus == "PENDING")
-                                select a).ToList();
-                //var requests = await _context.Orders.Where(x => x.orderStatus == "PENDING").ToListAsync();
+                var requests = await _context.Orders.Where(x => x.orderStatus == "PENDING").ToListAsync();
                 if (requests == null)
                 {
                     return null;
@@ -109,6 +104,81 @@ namespace OnDemandCarWash.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine("Error occurred at WasherRequests in WasherRepo");
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
+        #endregion
+
+        #region WashCompleteMethod
+        public async Task<ActionResult<AfterWash>> AddAfterWashAsync(AfterWashDto request)
+        {
+            try
+            {
+                var req = new AfterWash();
+                _mapper.Map(request, req);
+                req.timeStamp = DateTime.Now.ToString();
+                _context.afterWashes.Add(req); ;
+                await _context.SaveChangesAsync();
+                return req;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Error occurred at AddAfterWash in WasherRepo");
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
+        #endregion
+
+        #region CurrentOrdersMethod
+        public async Task<IEnumerable<Order>> GetCurrentOrdersAsync()
+        {
+            try
+            {
+                var orders = await _context.Orders.Where(x => x.orderStatus == "ACCEPTED" || x.orderStatus == "IN-PROGRESS")
+                    .ToListAsync();
+                if (orders == null)
+                {
+                    return null;
+                }
+                return orders;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occurred at CurrentOrders in WasherRepo");
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
+        #endregion
+
+        #region PastOrdersMethod
+        public async Task<IEnumerable<Order>> GetPastOrdersAsync()
+        {
+            try
+            {
+                var orders = await _context.Orders.Where(x => x.orderStatus == "CANCELLED" || x.orderStatus == "COMPLETED")
+                    .ToListAsync();
+                if (orders == null)
+                {
+                    return null;
+                }
+                return orders;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occurred at PastOrders in WasherRepo");
                 return null;
             }
             finally
