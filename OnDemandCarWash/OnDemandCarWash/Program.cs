@@ -27,6 +27,7 @@ builder.Services.AddSwaggerGen(options =>
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
+
 //JWT Bearer
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -41,11 +42,11 @@ builder.Services.AddSwaggerGen(options =>
         };
     });
 
-//builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
-//    policy =>
-//    {
-//        policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
-//    }));
+builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+    }));
 //email
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
@@ -65,7 +66,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//app.UseCors("NgOrigins");
+
+app.UseCors("NgOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

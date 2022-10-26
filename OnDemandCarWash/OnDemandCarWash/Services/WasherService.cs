@@ -18,7 +18,7 @@ namespace OnDemandCarWash.Services
             return await _repo.GetWasherAsync(id);
         }
 
-        public async Task<ActionResult<User>> UpdateWasherAsync(int id, WasherProfileDto washer)
+        public async Task<ActionResult<WasherProfileDto>> UpdateWasherAsync(int id, WasherProfileDto washer)
         {
             if (!await _repo.WasherExistsAsync(id))
             {
@@ -27,7 +27,7 @@ namespace OnDemandCarWash.Services
             return await _repo.UpdateWasherAsync(id, washer);
         }
 
-        public async Task<IEnumerable<Order>> GetWasherRequestsAsync()
+        public async Task<IEnumerable<WasherRequestsDto>> GetWasherRequestsAsync()
         {
             return await _repo.GetWasherRequestsAsync();
         }
@@ -37,14 +37,24 @@ namespace OnDemandCarWash.Services
             return await _repo.AddAfterWashAsync(request);
         }
 
-        public async Task<IEnumerable<Order>> GetCurrentOrdersAsync()
+        public async Task<IEnumerable<WasherRequestsDto>> GetCurrentOrdersAsync()
         {
             return await _repo.GetCurrentOrdersAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetPastOrdersAsync()
+        public async Task<IEnumerable<WasherRequestsDto>> GetPastOrdersAsync()
         {
             return await _repo.GetPastOrdersAsync();
+        }
+
+        public async Task<IEnumerable<SendInvoiceDto>> GetInvoiceDetailsAsync()
+        {
+            return await _repo.GetInvoiceDetailsAsync();
+        }
+
+        public async Task<ActionResult<Order>> AcceptRequestAsync(AcceptRequestDto request)
+        {
+            return await _repo.AcceptRequestAsync(request);
         }
     }
 }

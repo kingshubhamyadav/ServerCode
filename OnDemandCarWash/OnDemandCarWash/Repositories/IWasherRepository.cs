@@ -8,10 +8,12 @@ namespace OnDemandCarWash.Repositories
     {
         Task<bool> WasherExistsAsync(int id);
         Task<ActionResult<WasherProfileDto>> GetWasherAsync(int id);
-        Task<ActionResult<User>> UpdateWasherAsync(int id, WasherProfileDto washer);
-        Task<IEnumerable<Order>> GetWasherRequestsAsync();
+        Task<ActionResult<WasherProfileDto>> UpdateWasherAsync(int id, WasherProfileDto washer);
+        Task<IEnumerable<WasherRequestsDto>> GetWasherRequestsAsync();
         Task<ActionResult<AfterWash>> AddAfterWashAsync(AfterWashDto request);
-        Task<IEnumerable<Order>> GetCurrentOrdersAsync();
-        Task<IEnumerable<Order>> GetPastOrdersAsync();
+        Task<IEnumerable<WasherRequestsDto>> GetCurrentOrdersAsync();
+        Task<IEnumerable<WasherRequestsDto>> GetPastOrdersAsync();
+        Task<IEnumerable<SendInvoiceDto>> GetInvoiceDetailsAsync();
+        Task<ActionResult<Order>> AcceptRequestAsync(AcceptRequestDto request);
     }
 }

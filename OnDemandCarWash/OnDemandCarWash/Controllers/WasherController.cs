@@ -27,13 +27,13 @@ namespace OnDemandCarWash.Controllers
             {
                 return NotFound();
             }
-            return Ok(res);
+            return Ok(res.Value);
         }
         #endregion
 
         #region Edit-ProfileMethod
         [HttpPut("edit-profile/{id}")]
-        public async Task<ActionResult> UpdateWasher(int id, WasherProfileDto washer)
+        public async Task<ActionResult<WasherProfileDto>> UpdateWasher(int id, WasherProfileDto washer)
         {
 
             var res = await _service.UpdateWasherAsync(id, washer);
@@ -41,7 +41,7 @@ namespace OnDemandCarWash.Controllers
             {
                 return NotFound();
             }
-            return Ok("Success!");
+            return Ok(res.Value);
 
         }
         #endregion
@@ -55,7 +55,7 @@ namespace OnDemandCarWash.Controllers
             {
                 return NotFound("No requests to display.");
             }
-            return Ok(_mapper.Map<IEnumerable<WasherRequestsDto>>(res));
+            return Ok(res);
         }
         #endregion
 
@@ -68,7 +68,7 @@ namespace OnDemandCarWash.Controllers
             {
                 return BadRequest("Failure!");
             }
-            return Ok("Success!");
+            return Ok(res);
         }
         #endregion
 
@@ -81,7 +81,7 @@ namespace OnDemandCarWash.Controllers
             {
                 return NotFound("No Orders to display.");
             }
-            return Ok(_mapper.Map<WasherRequestsDto>(res));
+            return Ok(res);
         }
         #endregion
 
@@ -94,7 +94,33 @@ namespace OnDemandCarWash.Controllers
             {
                 return NotFound("No Orders to display.");
             }
-            return Ok(_mapper.Map<WasherRequestsDto>(res));
+            return Ok(res);
+        }
+        #endregion
+
+        #region InvoiceDetailsMethod
+        [HttpGet("invoice-details")]
+        public async Task<ActionResult<IEnumerable<SendInvoiceDto>>> GetInvoiceDetailsAsync()
+        {
+            var res = await _service.GetInvoiceDetailsAsync();
+            if(res == null || !res.Any())
+            {
+                return NotFound("No invoice to display.");
+            }
+            return Ok(res);
+        }
+        #endregion
+
+        #region AddOrderToWasherMethod
+        [HttpPost("accept-request")]
+        public async Task<ActionResult> AcceptRequestAsync(AcceptRequestDto request)
+        {
+            var res = await _service.AcceptRequestAsync(request);
+            if (res == null)
+            {
+                return BadRequest("Failure!");
+            }
+            return Ok(res);
         }
         #endregion
     }

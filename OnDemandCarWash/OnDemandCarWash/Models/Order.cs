@@ -11,7 +11,7 @@ namespace OnDemandCarWash.Models
         public string timeOfWash { get; set; }
         public string dateOfWash { get; set; }
         public string location { get; set; }
-        public string washTypeId { get; set; }
+        public int washTypeId { get; set; }
         public string rating { get; set; }
         public string orderStatus { get; set; }
         public string timeStamp { get; set; }

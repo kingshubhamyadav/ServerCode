@@ -6,6 +6,7 @@ namespace OnDemandCarWash.Models
     {
 
         [Key]
+        public int washId { get; set; }
         public int orderId { get; set; }
         public int waterUsed { get; set; }
         public string carImg { get; set; }

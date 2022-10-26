@@ -13,6 +13,7 @@ namespace OnDemandCarWash.Repositories
             CreateMap<WasherProfileDto, User>();
             CreateMap<Order, WasherRequestsDto>();
             CreateMap<AfterWashDto, AfterWash>();
+            CreateMap<Order, SendInvoiceDto>();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace OnDemandCarWash.Models
     {
         [Key]
         public int washTypeId { get; set; }
-        public int catogries { get; set; }
+        public string categories { get; set; }
         public string charges { get; set; }
         public string timeStamp { get; set; }
        // public virtual List<Order> Orders { get; set; }
