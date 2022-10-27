@@ -123,5 +123,18 @@ namespace OnDemandCarWash.Controllers
             return Ok(res);
         }
         #endregion
+
+        #region ProfileImageUploadMethod
+        [HttpPost("upload-profile-img")]
+        public async Task<ActionResult> ProfileImageUploadAsync(ImageDto request)
+        {
+            var res = await _service.ProfileImageUploadAsync(request);
+            if(res == null)
+            {
+                return BadRequest("Failure!");
+            }
+            return Ok(res);
+        }
+        #endregion
     }
 }

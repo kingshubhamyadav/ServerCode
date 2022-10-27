@@ -10,5 +10,6 @@
         public string Pincode { get; set; } = string.Empty; //comes from address table
         public string City { get; set; } = string.Empty;
         public string State { get; set; } = string.Empty;
+        public string Img { get; set; } = string.Empty;
     }
 }

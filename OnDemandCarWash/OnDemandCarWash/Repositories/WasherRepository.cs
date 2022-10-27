@@ -35,7 +35,9 @@ namespace OnDemandCarWash.Repositories
                         Phone = _context.Users.SingleOrDefault(x => x.userId == p.userId).phone,
                         Pincode = _context.Address.SingleOrDefault(x => x.userId == p.userId).pincode,
                         City = _context.Address.SingleOrDefault(x => x.userId == p.userId).city,
-                        State = _context.Address.SingleOrDefault(x => x.userId == p.userId).state
+                        State = _context.Address.SingleOrDefault(x => x.userId == p.userId).state,
+                        Img = _context.Users.SingleOrDefault(x => x.userId == p.userId).img
+                        
                     }).SingleOrDefaultAsync();
                 if (user != null)
                 {
@@ -147,7 +149,6 @@ namespace OnDemandCarWash.Repositories
             {
                 var req = new AfterWash();
                 _mapper.Map(request, req);
-                req.carImg = "a";
                 req.timeStamp = DateTime.Now.ToString();
                 _context.afterWashes.Add(req); ;
                 //once we add the after wash details for the invoice we change that orders status from IN-PROGRESS to COMPLETED.
@@ -288,6 +289,29 @@ namespace OnDemandCarWash.Repositories
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("Error occurred at AcceptRequest in WasherRepo");
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
+        #endregion
+
+        #region ProfileImageUploadMethod
+        public async Task<ActionResult<User>> ProfileImageUploadAsync(ImageDto request)
+        {
+            try
+            {
+                var img = await _context.Users.Where(x => x.userId == request.userId).SingleOrDefaultAsync();
+                img.img = request.img;
+                await _context.SaveChangesAsync();
+                return img;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Error occurred at ProfileImageUpload in WasherRepo");
                 return null;
             }
             finally

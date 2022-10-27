@@ -56,5 +56,10 @@ namespace OnDemandCarWash.Services
         {
             return await _repo.AcceptRequestAsync(request);
         }
+
+        public async Task<ActionResult<User>> ProfileImageUploadAsync(ImageDto request)
+        {
+            return await _repo.ProfileImageUploadAsync(request);
+        }
     }
 }

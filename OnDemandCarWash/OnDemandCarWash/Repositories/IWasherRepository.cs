@@ -15,5 +15,6 @@ namespace OnDemandCarWash.Repositories
         Task<IEnumerable<WasherRequestsDto>> GetPastOrdersAsync();
         Task<IEnumerable<SendInvoiceDto>> GetInvoiceDetailsAsync();
         Task<ActionResult<Order>> AcceptRequestAsync(AcceptRequestDto request);
+        Task<ActionResult<User>> ProfileImageUploadAsync(ImageDto request);
     }
 }
