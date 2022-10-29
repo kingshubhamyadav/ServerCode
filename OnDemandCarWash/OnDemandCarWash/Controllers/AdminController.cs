@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnDemandCarWash.Context;
 using OnDemandCarWash.Dtos;
 using OnDemandCarWash.Models;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -23,6 +26,7 @@ namespace OnDemandCarWash.Controllers
     }
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private CarWashDbContext _context;
@@ -34,6 +38,7 @@ namespace OnDemandCarWash.Controllers
 
         //create wash type
         [HttpPost("CreateServices")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<WashType>> CreateServices(CreateWashTypeDto request)
         {
             try
@@ -46,24 +51,26 @@ namespace OnDemandCarWash.Controllers
                 await _context.SaveChangesAsync();
                 return Ok(services);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e.InnerException.Message);
             }
-          
+
 
         }
 
         //add promocode
         [HttpPost("CreatePromocode")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Promocode>> CreatePromocode(CreatePromocodeDto request)
         {
             try
             {
                 var promo = new Promocode();
-                promo.code = request.code;
+                promo.code = request.code.ToUpper();
                 promo.discount = request.discount;
                 promo.status = PromocodeSatus.Active.ToString();
+                promo.timeStamp = DateTime.Now.ToString();
                 await _context.Promocodes.AddAsync(promo);
                 await _context.SaveChangesAsync();
                 return Ok(promo);
@@ -78,6 +85,7 @@ namespace OnDemandCarWash.Controllers
 
         //add washer
         [HttpPost("CreateWasher")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<User>> CreateWasher(CreatWasherDto request)
         {
 
@@ -91,13 +99,13 @@ namespace OnDemandCarWash.Controllers
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
                 user.firstName = request.firstName;
-                user.lastName = request.firstName;
-                user.email = request.firstName;
-                user.phone = request.firstName;
+                user.lastName = request.lastName;
+                user.email = request.email;
+                user.phone = request.phone;
                 user.role = Role.Washer.ToString();
-                user.img = "";
+                user.img = "https://bootdey.com/img/Content/avatar/avatar7.png";
                 user.status = UserStatus.Active.ToString();
-                user.timeStamp = "6/6/2022";
+                user.timeStamp = DateTime.Now.ToString();
 
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
@@ -121,11 +129,12 @@ namespace OnDemandCarWash.Controllers
 
         // get all washer
         [HttpGet("GetWasher")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GetWasherDto>> GetWasher()
         {
             try
             {
-                var washers = await _context.Users.Where(x=>x.role==Role.Washer.ToString()).ToListAsync();
+                var washers = await _context.Users.Where(x => x.role == Role.Washer.ToString()).ToListAsync();
                 if (washers == null)
                 {
                     return BadRequest("Sorry we dont have any washers");
@@ -141,6 +150,7 @@ namespace OnDemandCarWash.Controllers
 
         // get all washer
         [HttpGet("GetCustomer")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GetWasherDto>> GetCustomer() // GetWasherDto is used because washer and customer have same details to return
         {
             try
@@ -158,14 +168,26 @@ namespace OnDemandCarWash.Controllers
             }
 
         }
-        
+
         // get all pending order
         [HttpGet("PendingOrder")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OrderDto>> PendingOrder()
         {
             try
             {
-                var pen = await _context.Orders.Where(x => x.orderStatus == OrderStatus.PENDING.ToString()).ToListAsync();
+                //var pen = await _context.Orders.Where(x => x.orderStatus == OrderStatus.PENDING.ToString()).ToListAsync();
+                var pen = await _context.Orders.Where(x => x.orderStatus == "PENDING")
+                    .Select(p => new AdminWashRequestDto()
+                    {
+                        orderId = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).orderId,
+                        code = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).code,
+                        timeOfWash = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).timeOfWash,
+                        dateOfWash = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).dateOfWash,
+                        location = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).location,
+                        package = _context.washTypes.SingleOrDefault(x => x.washTypeId == p.washTypeId).categories,
+                        userMail = _context.Users.SingleOrDefault(x => x.userId == p.userId).email
+                    }).ToListAsync();
                 if (pen == null)
                 {
                     return BadRequest("Sorry we dont have any pending order");
@@ -178,9 +200,10 @@ namespace OnDemandCarWash.Controllers
             }
 
         }
-        
+
         // get all  order
         [HttpGet("AllOrder")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OrderDto>> AllOrder()
         {
             try
@@ -198,9 +221,10 @@ namespace OnDemandCarWash.Controllers
             }
 
         }
-        
+
         // get all promocode
         [HttpGet("AllPromocode")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PromocodeDto>> AllPromocode()
         {
             try
@@ -219,8 +243,61 @@ namespace OnDemandCarWash.Controllers
 
         }
 
+        //assign washer to order
+        [HttpPost("accept-request")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> AcceptRequestAsync(AdminAcceptRequestDto request)
+        {
+            try
+            {
+                var order = await _context.Orders.Where(x => x.orderId == request.orderId).SingleOrDefaultAsync();
+                var id = await _context.Users.Where(x => x.Username == request.washerId)
+                    .Select(p => new GetCustomerIdDto()
+                    {
+                        userId = _context.Users.SingleOrDefault(x => x.userId == p.userId).userId
+                    }).SingleOrDefaultAsync();
+                order.washerUserId = id.userId;
+                order.orderStatus = "IN-PROGRESS";
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occured at AcceptRequest in AdminRepo");
+                return BadRequest(ex);
+            }
+            finally
+            {
 
+            }
 
+        }
 
+        //gets customerID from username
+        [HttpGet("get-customer-id/{name}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<GetCustomerIdDto>> GetUserId(string name)
+        {
+            try
+            {
+                var customerId = await _context.Users.Where(x => x.Username == name)
+                    .Select(p => new GetCustomerIdDto()
+                    {
+                        userId = _context.Users.SingleOrDefault(x => x.userId == p.userId).userId
+                    }).SingleOrDefaultAsync();
+
+                return Ok(customerId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occured at GetUserId in AdminRepo");
+                return BadRequest(ex);
+            }
+            finally
+            {
+
+            }
+
+        }
     }
 }

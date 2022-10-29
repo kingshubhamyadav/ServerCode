@@ -2,8 +2,8 @@
 {
     public class WashTypeDto
     {
-        public string catogries { get; set; } = string.Empty;
-        public string discription { get; set; } = string.Empty;
+        public string category { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
         public string charges { get; set; } = string.Empty;
     }
 }

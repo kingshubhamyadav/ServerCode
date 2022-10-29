@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Execution;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,9 +23,10 @@ namespace OnDemandCarWash.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Customer")]
     public class CustomerController : ControllerBase
     {
-       
+
         private CarWashDbContext _context;
 
         public CustomerController(CarWashDbContext context)
@@ -33,6 +35,7 @@ namespace OnDemandCarWash.Controllers
         }
 
         [HttpGet("OurServices")]
+        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<WashTypeDto>> OurServices()
         {
             try
@@ -52,6 +55,7 @@ namespace OnDemandCarWash.Controllers
         }
         //check whether the promocode is valid or not and return discount value
         [HttpPost("CheckPromocode")]
+        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<Promocode>> GetCoupen(PromocodeDto request)
         {
             try
@@ -63,14 +67,14 @@ namespace OnDemandCarWash.Controllers
                     if (coupen != null)
                     {
                         if (coupen.status == CoupenStatus.Active.ToString())
-                        { 
+                        {
                             return Ok(coupen.discount);
                         }
-                        return BadRequest("Invalid Co");
+                        return BadRequest("Invalid Coupon");
                     }
-                    return BadRequest("Invalid Coupen");
+                    return BadRequest("Invalid Coupon");
                 }
-                return BadRequest("Coupen Have Been Used Before");
+                return BadRequest("Coupon Have Been Used Before");
             }
             catch (Exception ex)
             {
@@ -83,6 +87,7 @@ namespace OnDemandCarWash.Controllers
 
         //stores all the details after payment (order table details + paymentDetais table)
         [HttpPost("StoreOrderDetail")]
+        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<Order>> StoreOrderDetail(OrderDto request)
         {
             var order = new Order();
@@ -91,25 +96,27 @@ namespace OnDemandCarWash.Controllers
             order.dateOfWash = request.dateOfWash;
             order.location = request.location;
             order.userId = request.userId;
-            order.washerUserId = request.washerUserId;
+            order.washerUserId = -1;
             order.rating = "null";
             order.code = request.code;//promocode
-            order.orderStatus=OrderStatus.PENDING.ToString();
-
-
-
+            order.orderStatus = OrderStatus.PENDING.ToString();
+            order.timeStamp = DateTime.Now.ToString();
+            order.washTypeId = request.washTypeId;
 
             try
             {
                 await _context.Orders.AddAsync(order);
                 await _context.SaveChangesAsync();
+                var orderId = _context.Orders.Where(x => x.timeStamp == order.timeStamp && x.dateOfWash == order.dateOfWash && x.timeOfWash == order.timeOfWash && x.userId == order.userId).SingleOrDefault().orderId;
+                
                 // Save Car Details
-                if (!SaveCarDetail(request.carNumber, request.carType, request.carImg,order.orderId))
+                if (!SaveCarDetail(request.carNumber, request.carType, request.carImg, orderId))
                 {
                     return BadRequest("Something went wrong in car details");
                 }
+                
                 // Save payment details
-                if (!SavePaymentDetail(request.amountPaid, request.totalDiscount,order.orderId))
+                if (!SavePaymentDetail(request.amountPaid, request.totalDiscount, orderId))
                 {
                     return BadRequest("Something went wrong in payment");
                 }
@@ -117,25 +124,29 @@ namespace OnDemandCarWash.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Exception occurred at StoreOrderDetail in CustomerRepo");
                 return BadRequest(ex);
             }
 
         }
         //saving payment details 
-        private bool SavePaymentDetail(string amountPaid, string totalDiscount,int orderId)
+        private bool SavePaymentDetail(string amountPaid, string totalDiscount, int orderId)
         {
             var pay = new PaymentDetail();
             pay.orderId = orderId;
-            pay.amountPaid = amountPaid;    
+            pay.amountPaid = amountPaid;
             pay.totalDiscount = totalDiscount;
             pay.paymentStatus = PaymentStatus.Success.ToString();
+            pay.timeStamp = DateTime.Now.ToString();
             try
             {
                 _context.PaymentDetails.AddAsync(pay);
                 _context.SaveChangesAsync();
                 return true;
-            }catch(Exception ex) //make custom exception
+            }
+            catch (Exception ex) //make custom exception
             {
+                Console.WriteLine("Error in payment details in Checkout");
                 return false;
             }
         }
@@ -147,6 +158,7 @@ namespace OnDemandCarWash.Controllers
             car.carNumber = carNumber;
             car.carType = carType;
             car.carImg = carImg;
+            car.timeStamp = DateTime.Now.ToString();
             try
             {
                 _context.carDetails.AddAsync(car);
@@ -155,22 +167,24 @@ namespace OnDemandCarWash.Controllers
             }
             catch (Exception ex) //make custom exception
             {
+                Console.WriteLine("Error in adding car details");
                 return false;
             }
         }
 
-        [HttpGet("OrderHistory")]
-        public async Task<IEnumerable<OrderDto>> OrderHistory(int userId)
+        [HttpGet("OrderHistory/{id}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IEnumerable<OrderHistoryDto>> OrderHistory(int id)
         {
             try
             {
-                var orders = await _context.Orders.Where(x => x.userId == userId)
-                   .Select(p => new OrderDto()
+                var orders = await _context.Orders.Where(x => x.userId == id)
+                   .Select(p => new OrderHistoryDto()
                    {
-                       timeOfWash = _context.Orders.SingleOrDefault(x => x.userId == p.userId).timeOfWash,
-                       dateOfWash = _context.Orders.SingleOrDefault(x => x.userId == p.userId).dateOfWash,
-                       location = _context.Orders.SingleOrDefault(x => x.userId == p.userId).location,
-                       code = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).timeOfWash,
+                       timeOfWash = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).timeOfWash,
+                       dateOfWash = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).dateOfWash,
+                       location = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).location,
+                       code = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).code,
                        amountPaid = _context.PaymentDetails.SingleOrDefault(x => x.orderId == p.orderId).amountPaid,
                        totalDiscount = _context.PaymentDetails.SingleOrDefault(x => x.orderId == p.orderId).totalDiscount
                    }).ToListAsync();
@@ -188,6 +202,7 @@ namespace OnDemandCarWash.Controllers
         }
 
         [HttpGet("GetWasher")]
+        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<OrderDto>> GetWasher()
         {
             try
@@ -206,6 +221,87 @@ namespace OnDemandCarWash.Controllers
             }
         }
 
+        [HttpPut("edit-profile/{id}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<ActionResult<CustomerProfileDto>> UpdateWasherAsync(int id, CustomerProfileDto customer)
+        {
+            try
+            {
+                //var user = await _context.Users.FirstOrDefaultAsync(x => x.userId == id);
+                _context.Users.SingleOrDefault(x => x.userId == customer.userId).firstName = customer.FirstName;
+                _context.Users.SingleOrDefault(x => x.userId == customer.userId).lastName = customer.LastName;
+                _context.Users.SingleOrDefault(x => x.userId == customer.userId).email = customer.Email;
+                _context.Users.SingleOrDefault(x => x.userId == id).phone = customer.Phone;
+
+                await _context.SaveChangesAsync();
+                return customer;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occurred at UpdateCustomer in CustomerRepo");
+                return null;
+            }
+            finally
+            {
+
+            }
 
         }
+
+        [HttpGet("view-profile/{id}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<ActionResult<CustomerProfileDto>> GetCustomerProfileAsync(int id)
+        {
+            try
+            {
+                var user = await _context.Users.Where(x => x.userId == id)
+                    .Select(p => new CustomerProfileDto()
+                    {
+                        userId = _context.Users.SingleOrDefault(x => x.userId == p.userId).userId,
+                        FirstName = _context.Users.SingleOrDefault(x => x.userId == p.userId).firstName,
+                        LastName = _context.Users.SingleOrDefault(x => x.userId == p.userId).lastName,
+                        Email = _context.Users.SingleOrDefault(x => x.userId == p.userId).email,
+                        Phone = _context.Users.SingleOrDefault(x => x.userId == p.userId).phone,
+                        Img = _context.Users.SingleOrDefault(x => x.userId == p.userId).img
+                    }).SingleOrDefaultAsync();
+                if (user == null)
+                {
+                    return BadRequest("Unable to fetch user.");
+                }
+                return Ok(user);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error occurred at GetCustomer in CustomerRepo");
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
+
+        [HttpPost("upload-profile-img")]
+        [Authorize(Roles = "Customer")]
+        public async Task<ActionResult<User>> ProfileImageUploadAsync(ImageDto request)
+        {
+            try
+            {
+                var img = await _context.Users.Where(x => x.userId == request.userId).SingleOrDefaultAsync();
+                img.img = request.img;
+                await _context.SaveChangesAsync();
+                return img;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Error occurred at ProfileImageUpload in CutomerRepo");
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
+    }
 }

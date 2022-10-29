@@ -37,19 +37,19 @@ namespace OnDemandCarWash.Services
             return await _repo.AddAfterWashAsync(request);
         }
 
-        public async Task<IEnumerable<WasherRequestsDto>> GetCurrentOrdersAsync()
+        public async Task<IEnumerable<WasherRequestsDto>> GetCurrentOrdersAsync(int id)
         {
-            return await _repo.GetCurrentOrdersAsync();
+            return await _repo.GetCurrentOrdersAsync(id);
         }
 
-        public async Task<IEnumerable<WasherRequestsDto>> GetPastOrdersAsync()
+        public async Task<IEnumerable<WasherRequestsDto>> GetPastOrdersAsync(int id)
         {
-            return await _repo.GetPastOrdersAsync();
+            return await _repo.GetPastOrdersAsync(id);
         }
 
-        public async Task<IEnumerable<SendInvoiceDto>> GetInvoiceDetailsAsync()
+        public async Task<IEnumerable<SendInvoiceDto>> GetInvoiceDetailsAsync(int id)
         {
-            return await _repo.GetInvoiceDetailsAsync();
+            return await _repo.GetInvoiceDetailsAsync(id);
         }
 
         public async Task<ActionResult<Order>> AcceptRequestAsync(AcceptRequestDto request)
@@ -61,5 +61,7 @@ namespace OnDemandCarWash.Services
         {
             return await _repo.ProfileImageUploadAsync(request);
         }
+
+
     }
 }

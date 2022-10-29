@@ -52,13 +52,13 @@ namespace OnDemandCarWash.Controllers
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
                 user.firstName = request.firstName;
-                user.lastName = request.firstName;
-                user.email = request.firstName;
-                user.phone = request.firstName;
+                user.lastName = request.lastName;
+                user.email = request.email;
+                user.phone = request.phone;
                 user.role = Role.Customer.ToString();
-                user.img = "";
+                user.img = "https://bootdey.com/img/Content/avatar/avatar7.png";
                 user.status = UserStatus.Active.ToString();
-                user.timeStamp = "6/6/2022";
+                user.timeStamp = DateTime.Now.ToString();
 
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();

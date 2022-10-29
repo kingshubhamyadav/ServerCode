@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnDemandCarWash.Dtos;
 using OnDemandCarWash.Models;
 using OnDemandCarWash.Services;
+using System.Data;
 
 namespace OnDemandCarWash.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Washer")]
     public class WasherController : ControllerBase
     {
         private readonly WasherService _service;
@@ -33,6 +36,7 @@ namespace OnDemandCarWash.Controllers
 
         #region Edit-ProfileMethod
         [HttpPut("edit-profile/{id}")]
+        [Authorize(Roles = "Washer")]
         public async Task<ActionResult<WasherProfileDto>> UpdateWasher(int id, WasherProfileDto washer)
         {
 
@@ -48,6 +52,7 @@ namespace OnDemandCarWash.Controllers
 
         #region GetRequestsMethod
         [HttpGet("requests")]
+        [Authorize(Roles = "Washer")]
         public async Task<ActionResult<IEnumerable<WasherRequestsDto>>> GetWasherRequestsAsync()
         {
             var res = await _service.GetWasherRequestsAsync();
@@ -61,6 +66,7 @@ namespace OnDemandCarWash.Controllers
 
         #region WashCompleteMethod
         [HttpPost("wash-complete")]
+        [Authorize(Roles = "Washer")]
         public async Task<ActionResult> AddAfterWashMethod(AfterWashDto request)
         {
             var res = await _service.AddAfterWashAsync(request);
@@ -73,10 +79,11 @@ namespace OnDemandCarWash.Controllers
         #endregion
 
         #region CurrentOrdersMethod
-        [HttpGet("current-orders")]
-        public async Task<ActionResult<IEnumerable<WasherRequestsDto>>> GetCurrentOrdersAsync()
+        [HttpGet("current-orders/{id}")]
+        [Authorize(Roles = "Washer")]
+        public async Task<ActionResult<IEnumerable<WasherRequestsDto>>> GetCurrentOrdersAsync(int id)
         {
-            var res = await _service.GetCurrentOrdersAsync();
+            var res = await _service.GetCurrentOrdersAsync(id);
             if (res == null || !res.Any())
             {
                 return NotFound("No Orders to display.");
@@ -86,10 +93,11 @@ namespace OnDemandCarWash.Controllers
         #endregion
 
         #region PastOrdersMethod
-        [HttpGet("past-orders")]
-        public async Task<ActionResult<IEnumerable<WasherRequestsDto>>> GetPastOrdersAsync()
+        [HttpGet("past-orders/{id}")]
+        [Authorize(Roles = "Washer")]
+        public async Task<ActionResult<IEnumerable<WasherRequestsDto>>> GetPastOrdersAsync(int id)
         {
-            var res = await _service.GetPastOrdersAsync();
+            var res = await _service.GetPastOrdersAsync(id);
             if (res == null || !res.Any())
             {
                 return NotFound("No Orders to display.");
@@ -99,10 +107,11 @@ namespace OnDemandCarWash.Controllers
         #endregion
 
         #region InvoiceDetailsMethod
-        [HttpGet("invoice-details")]
-        public async Task<ActionResult<IEnumerable<SendInvoiceDto>>> GetInvoiceDetailsAsync()
+        [HttpGet("invoice-details/{id}")]
+        [Authorize(Roles = "Washer")]
+        public async Task<ActionResult<IEnumerable<SendInvoiceDto>>> GetInvoiceDetailsAsync(int id)
         {
-            var res = await _service.GetInvoiceDetailsAsync();
+            var res = await _service.GetInvoiceDetailsAsync(id);
             if(res == null || !res.Any())
             {
                 return NotFound("No invoice to display.");
@@ -113,6 +122,7 @@ namespace OnDemandCarWash.Controllers
 
         #region AddOrderToWasherMethod
         [HttpPost("accept-request")]
+        [Authorize(Roles = "Washer")]
         public async Task<ActionResult> AcceptRequestAsync(AcceptRequestDto request)
         {
             var res = await _service.AcceptRequestAsync(request);
@@ -126,6 +136,7 @@ namespace OnDemandCarWash.Controllers
 
         #region ProfileImageUploadMethod
         [HttpPost("upload-profile-img")]
+        [Authorize(Roles = "Washer")]
         public async Task<ActionResult> ProfileImageUploadAsync(ImageDto request)
         {
             var res = await _service.ProfileImageUploadAsync(request);

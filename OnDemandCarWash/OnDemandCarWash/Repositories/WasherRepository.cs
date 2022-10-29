@@ -33,9 +33,9 @@ namespace OnDemandCarWash.Repositories
                         LastName = _context.Users.SingleOrDefault(x => x.userId == p.userId).lastName,
                         Email = _context.Users.SingleOrDefault(x => x.userId == p.userId).email,
                         Phone = _context.Users.SingleOrDefault(x => x.userId == p.userId).phone,
-                        Pincode = _context.Address.SingleOrDefault(x => x.userId == p.userId).pincode,
-                        City = _context.Address.SingleOrDefault(x => x.userId == p.userId).city,
-                        State = _context.Address.SingleOrDefault(x => x.userId == p.userId).state,
+                        //Pincode = _context.Address.SingleOrDefault(x => x.userId == p.userId).pincode,
+                        //City = _context.Address.SingleOrDefault(x => x.userId == p.userId).city,
+                        //State = _context.Address.SingleOrDefault(x => x.userId == p.userId).state,
                         Img = _context.Users.SingleOrDefault(x => x.userId == p.userId).img
                         
                     }).SingleOrDefaultAsync();
@@ -68,9 +68,9 @@ namespace OnDemandCarWash.Repositories
                 _context.Users.SingleOrDefault(x => x.userId == washer.userId).lastName = washer.LastName;
                 _context.Users.SingleOrDefault(x => x.userId == washer.userId).email = washer.Email;
                 _context.Users.SingleOrDefault(x => x.userId == washer.userId).phone = washer.Phone;
-                _context.Address.SingleOrDefault(x => x.userId == washer.userId).pincode = washer.Pincode;
-                _context.Address.SingleOrDefault(x => x.userId == washer.userId).city = washer.City;
-                _context.Address.SingleOrDefault(x => x.userId == washer.userId).state = washer.State;
+                //_context.Address.SingleOrDefault(x => x.userId == washer.userId).pincode = washer.Pincode;
+                //_context.Address.SingleOrDefault(x => x.userId == washer.userId).city = washer.City;
+                //_context.Address.SingleOrDefault(x => x.userId == washer.userId).state = washer.State;
 
                 await _context.SaveChangesAsync();
                 return washer;
@@ -117,8 +117,10 @@ namespace OnDemandCarWash.Repositories
                     .Select(p => new WasherRequestsDto()
                     {
                         orderId = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).orderId,
+                        customerId = _context.Users.SingleOrDefault(x => x.userId == p.userId).userId,
                         firstName = _context.Users.SingleOrDefault(x => x.userId == p.userId).firstName,
                         lastName = _context.Users.SingleOrDefault(x => x.userId == p.userId).lastName,
+                        email = _context.Users.SingleOrDefault(x => x.userId == p.userId).email,
                         timeOfWash = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).timeOfWash,
                         dateOfWash = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).dateOfWash,
                         location = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).location,
@@ -147,14 +149,19 @@ namespace OnDemandCarWash.Repositories
         {
             try
             {
-                var req = new AfterWash();
-                _mapper.Map(request, req);
-                req.timeStamp = DateTime.Now.ToString();
-                _context.afterWashes.Add(req); ;
+                var afterwash = new AfterWash();
+                afterwash.orderId = request.orderId;
+                afterwash.waterUsed = request.waterUsed;
+                afterwash.carImg = request.carImg;
+                afterwash.timeStamp = DateTime.Now.ToString();
+
+                _context.afterWashes.Add(afterwash);
+
                 //once we add the after wash details for the invoice we change that orders status from IN-PROGRESS to COMPLETED.
-                _context.Orders.Where(x => x.orderId == req.orderId).SingleOrDefault().orderStatus = "COMPLETED";
+                _context.Orders.Where(x => x.orderId == afterwash.orderId).SingleOrDefault().orderStatus = "COMPLETED";
+                _context.Orders.Where(x => x.orderId == afterwash.orderId).SingleOrDefault().rating = request.rating;
                 await _context.SaveChangesAsync();
-                return req;
+                return afterwash;
             }
             catch (Exception ex)
             {
@@ -170,12 +177,12 @@ namespace OnDemandCarWash.Repositories
         #endregion
 
         #region CurrentOrdersMethod
-        public async Task<IEnumerable<WasherRequestsDto>> GetCurrentOrdersAsync()
+        public async Task<IEnumerable<WasherRequestsDto>> GetCurrentOrdersAsync(int id)
         {
             try
             {
                 //var orders = await _context.Orders.Where(x => x.orderStatus == "ACCEPTED" || x.orderStatus == "IN-PROGRESS").ToListAsync();
-                var orders = await _context.Orders.Where(x => x.orderStatus == "ACCEPTED" || x.orderStatus == "IN-PROGRESS")
+                var orders = await _context.Orders.Where(x => (x.orderStatus == "ACCEPTED" || x.orderStatus == "IN-PROGRESS") && x.washerUserId == id)
                     .Select(p => new WasherRequestsDto()
                     {
                         orderId = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).orderId,
@@ -205,12 +212,12 @@ namespace OnDemandCarWash.Repositories
         #endregion
 
         #region PastOrdersMethod
-        public async Task<IEnumerable<WasherRequestsDto>> GetPastOrdersAsync()
+        public async Task<IEnumerable<WasherRequestsDto>> GetPastOrdersAsync(int id)
         {
             try
             {
                 //var orders = await _context.Orders.Where(x => x.orderStatus == "CANCELLED" || x.orderStatus == "COMPLETED").ToListAsync();
-                var orders = await _context.Orders.Where(x => x.orderStatus == "CANCELLED" || x.orderStatus == "COMPLETED")
+                var orders = await _context.Orders.Where(x => (x.orderStatus == "CANCELLED" || x.orderStatus == "COMPLETED") && x.washerUserId == id)
                     .Select(p => new WasherRequestsDto()
                     {
                         orderId = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).orderId,
@@ -240,12 +247,12 @@ namespace OnDemandCarWash.Repositories
         #endregion
 
         #region InvoiceDetailsMethod
-        public async Task<IEnumerable<SendInvoiceDto>> GetInvoiceDetailsAsync()
+        public async Task<IEnumerable<SendInvoiceDto>> GetInvoiceDetailsAsync(int id)
         {
             try
             {
                 //var invoice = await _context.Orders.Where(x => x.orderStatus == "IN-PROGRESS").ToListAsync();
-                var invoices = await _context.Orders.Where(x => x.orderStatus == "IN-PROGRESS")
+                var invoices = await _context.Orders.Where(x => x.orderStatus == "IN-PROGRESS" && x.washerUserId == id)
                     .Select(p => new SendInvoiceDto()
                     {
                         orderId = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).orderId,
