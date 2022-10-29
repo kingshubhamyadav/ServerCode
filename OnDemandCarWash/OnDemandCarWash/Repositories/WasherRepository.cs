@@ -280,7 +280,7 @@ namespace OnDemandCarWash.Repositories
             try
             {
                 var order = await _context.Orders.Where(x => x.orderId == request.orderId).SingleOrDefaultAsync();
-                order.washerUsesrId = request.washerId;
+                order.washerUserId = request.washerId;
                 order.orderStatus = "IN-PROGRESS";
                 await _context.SaveChangesAsync();
                 return order;

@@ -3,6 +3,6 @@
     public class AcceptRequestDto
     {
         public int orderId { get; set; }
-        public string washerId { get; set; } = string.Empty;
+        public int washerId { get; set; } = 0;
     }
 }

@@ -7,14 +7,16 @@ namespace OnDemandCarWash.Models
         [Key]
         public int orderId { get; set; }
         public int userId { get; set; }//customer user id
-        public string washerUsesrId { get; set; }
+        public int washerUserId { get; set; }
+        public string code { get; set; }//promocode
+
         public string timeOfWash { get; set; }
         public string dateOfWash { get; set; }
         public string location { get; set; }
         public int washTypeId { get; set; }
         public string rating { get; set; }
         public string orderStatus { get; set; }
-        public string timeStamp { get; set; }
+        public string timeStamp { get; set; } = String.Empty;
 
         //Navigation Property
         //public virtual User User { get; set; }

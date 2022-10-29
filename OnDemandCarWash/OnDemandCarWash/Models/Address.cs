@@ -14,7 +14,7 @@ namespace OnDemandCarWash.Models
         public string pincode { get; set; }
         public string city { get; set; }  
         public string state { get; set; }
-        public string timeStamp { get; set; }
+        public string timeStamp { get; set; }=String.Empty;
 
         //Navigation property
         //public virtual User User { get; set; }

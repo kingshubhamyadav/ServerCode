@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "P5JSDT0ZN32cuvq0GyR0Rn1Nbpzoh79ChlsyD1OPN/grxmN8I1jSMh4+pVAqhrse8ByfFhaj94QndSfnTboW4A==",
+  "dgSpecHash": "eECMjpdPw7GKzhWrqkEZBb93QPrE4aVWneI3ViXBoRLKiiTQ76AtC9w8kLi48rq+fyvbP2Z033FhggVnHBElBA==",
   "success": true,
-  "projectFilePath": "d:\\cap\\core\\New-CaseStudy\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
+  "projectFilePath": "D:\\cap\\core\\test\\OnDemandCarWash\\OnDemandCarWash\\OnDemandCarWash.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\RESPECT\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
     "C:\\Users\\RESPECT\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
@@ -67,12 +67,5 @@
     "C:\\Users\\RESPECT\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
     "C:\\Users\\RESPECT\\.nuget\\packages\\system.windows.extensions\\4.7.0\\system.windows.extensions.4.7.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file d:\\cap\\core\\New-CaseStudy\\OnDemandCarWash\\OnDemandCarWash\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  "logs": []
 }
