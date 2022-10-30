@@ -85,18 +85,24 @@ namespace OnDemandCarWash.Controllers
         public async Task<ActionResult<string>> Login(UserDto request)
         {
             var users = await _context.Users.FirstOrDefaultAsync(x => x.Username == request.Username);
-            if (users == null)
-            {
-                return BadRequest("User not found");
-            }
-            if (!VerifyPasswordHash(request.Password, users.PasswordHash, users.PasswordSalt))
-            {
-                return BadRequest("wrong password");
-            }
+            if (users.status == "Active") {
+                if (users == null)
+                {
+                    return BadRequest("User not found");
+                }
+                if (!VerifyPasswordHash(request.Password, users.PasswordHash, users.PasswordSalt))
+                {
+                    return BadRequest("wrong password");
+                }
 
-            // token will be passed
-            string token = CreateToken(users);
-            return Ok(token);
+                // token will be passed
+                string token = CreateToken(users);
+                return Ok(token);
+            }
+            else
+            {
+                return BadRequest("User is InActive");
+            }
         }
 
         //check password is correct or not
@@ -170,7 +176,7 @@ namespace OnDemandCarWash.Controllers
 
         }
         //login for admin
-        [HttpPost("adminLogin")]
+        [HttpPost("AdminLogin")]
         public async Task<ActionResult<string>> adminLogin(AdminAuthDto request)
         {
             var users = await _context.Admins.FirstOrDefaultAsync(x => x.Username == request.Username);

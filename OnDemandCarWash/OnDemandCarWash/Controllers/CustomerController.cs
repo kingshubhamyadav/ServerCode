@@ -23,7 +23,7 @@ namespace OnDemandCarWash.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Customer")]
+    //[Authorize(Roles = "Customer")]
     public class CustomerController : ControllerBase
     {
 
@@ -165,12 +165,12 @@ namespace OnDemandCarWash.Controllers
             }
         }
 
-        [HttpGet("OrderHistory")]
-        public async Task<IEnumerable<OrderHistoryDto>> OrderHistory(int userId)
+        [HttpGet("OrderHistory/{id}")]
+        public async Task<IEnumerable<OrderHistoryDto>> OrderHistory(int id)
         {
             try
             {
-                var orders = await _context.Orders.Where(x => x.userId == userId)
+                var orders = await _context.Orders.Where(x => x.userId == id)
                    .Select(p => new OrderHistoryDto()
                    {
                        orderIdInPayment = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).orderId,
@@ -312,5 +312,29 @@ namespace OnDemandCarWash.Controllers
 
             }
         }
+
+        [HttpPost("CustomerRating")]
+       // [Authorize(Roles = "Customer")]
+        public async Task<ActionResult<Order>> CustomerRating(CustomerRatingDto request)
+        {
+            try
+            {
+                var rate = await _context.Orders.Where(x => x.orderId == request.orderId).SingleOrDefaultAsync();
+                 rate.rating = request.rate.ToString();
+                await _context.SaveChangesAsync();
+                return rate;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
+
+
     }
 }
