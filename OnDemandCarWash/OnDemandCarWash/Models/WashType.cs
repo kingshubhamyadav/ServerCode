@@ -9,7 +9,7 @@ namespace OnDemandCarWash.Models
         public string categories { get; set; }
         public string discription { get; set; } = string.Empty;
         public string charges { get; set; }
-        public string timeStamp { get; set; } = String.Empty;
+        public string timeStamp { get; set; } = DateTime.Now.ToString();
         // public virtual List<Order> Orders { get; set; }
     }
 }

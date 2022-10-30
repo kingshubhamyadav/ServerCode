@@ -243,6 +243,118 @@ namespace OnDemandCarWash.Controllers
 
         }
 
+        // Edit promo status
+        [HttpPut]
+        [Route("PromoStatus")]
+        public async Task<ActionResult<Promocode>> PromoStatus(int promoId, Promocode request)
+        {
+            var existingPromo = await _context.Promocodes.FirstOrDefaultAsync(x => x.promoId == request.promoId);
+            if (existingPromo != null)
+            {
+                existingPromo.code = request.code;
+                existingPromo.discount = request.discount;
+                existingPromo.status = request.status;
+                existingPromo.timeStamp = DateTime.Now.ToString();
+                await _context.SaveChangesAsync();
+                return Ok(existingPromo);
+            }
+            else
+            {
+                return NotFound("Promocode Not Found");
+            }
+        }
+
+        // Edit washer status
+        [HttpPut]
+        [Route("WasherStatus")]
+        public async Task<ActionResult<Promocode>> WasherStatus(int userId, User request)
+        {
+            var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.userId == request.userId);
+            if (existingUser != null)
+            {
+                existingUser.firstName = request.firstName;
+                existingUser.lastName = request.lastName;
+                existingUser.email = request.email;
+                existingUser.Username = request.Username;
+                existingUser.PasswordHash = request.PasswordHash;
+                existingUser.PasswordSalt = request.PasswordSalt;
+
+                existingUser.phone = request.phone;
+                existingUser.role = request.role;
+                existingUser.img = request.img;
+                existingUser.status = request.status;
+                existingUser.timeStamp = DateTime.Now.ToString();
+                await _context.SaveChangesAsync();
+                return Ok(existingUser);
+            }
+            else
+            {
+                return NotFound("Washer Not Found");
+            }
+        }
+
+        // Edit customer status
+        [HttpPut]
+        [Route("CustomerStatus")]
+        public async Task<ActionResult<User>> CustomerStatus(int promoId, User request)
+        {
+            var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.userId == request.userId);
+            if (existingUser != null)
+            {
+                existingUser.firstName = request.firstName;
+                existingUser.lastName = request.lastName;
+                existingUser.email = request.email;
+                existingUser.Username = request.Username;
+                existingUser.PasswordHash = request.PasswordHash;
+                existingUser.PasswordSalt = request.PasswordSalt;
+
+                existingUser.phone = request.phone;
+                existingUser.role = request.role;
+                existingUser.img = request.img;
+                existingUser.status = request.status;
+                existingUser.timeStamp = DateTime.Now.ToString();
+                await _context.SaveChangesAsync();
+                return Ok(existingUser);
+            }
+            else
+            {
+                return NotFound("Customer Not Found");
+            }
+        }
+
+        //leaders board
+        //[HttpGet("LeadersBoard")]
+        //public async Task<IEnumerable<LeadersBoardDto>> LeadersBoard()
+        //{
+        //    try
+        //    {
+
+        //        var washers = await _context.Users.Where(x => x.role == "Washer").ToListAsync();
+        //        var wash = await _context.afterWashes.Where(x => x.orderId != 0)
+        //         .Select(p => new LeadersBoardDto()
+        //         {
+
+        //             userId = _context.Users.SingleOrDefault(x => x.userId == p.userId).userId,
+        //             firstName = _context.Users.SingleOrDefault(x => x.userId == p.userId).firstName,
+        //             lastName = _context.Users.SingleOrDefault(x => x.userId == p.userId).lastName,
+        //             email = _context.Users.SingleOrDefault(x => x.userId == p.userId).email,
+        //             waterUsed = _context.afterWashes.SingleOrDefault(x => x.userId == p.userId).waterUsed,
+
+        //         }).ToListAsync();
+
+        //        return wash;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("Error occurred at leader's board");
+        //        return null;
+        //    }
+        //    finally
+        //    {
+
+        //    }
+        //}
+
         //assign washer to order
         [HttpPost("accept-request")]
         [Authorize(Roles = "Admin")]

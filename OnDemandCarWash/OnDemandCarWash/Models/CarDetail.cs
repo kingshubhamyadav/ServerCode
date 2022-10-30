@@ -10,7 +10,7 @@ namespace OnDemandCarWash.Models
         public string carNumber { get; set; }
         public string carType { get; set; }
         public string carImg { get; set; }
-        public string timeStamp { get; set; } = String.Empty;
+        public string timeStamp { get; set; } = DateTime.Now.ToString();
 
         //navigation property
         //public virtual Order Orders { get; set; }

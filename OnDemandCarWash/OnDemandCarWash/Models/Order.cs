@@ -16,7 +16,7 @@ namespace OnDemandCarWash.Models
         public int washTypeId { get; set; }
         public string rating { get; set; }
         public string orderStatus { get; set; }
-        public string timeStamp { get; set; } = String.Empty;
+        public string timeStamp { get; set; } = DateTime.Now.ToString();
 
         //Navigation Property
         //public virtual User User { get; set; }

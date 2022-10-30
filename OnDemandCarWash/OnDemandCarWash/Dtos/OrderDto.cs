@@ -8,6 +8,7 @@
         public string carType { get; set; } = String.Empty;
         public string carImg { get; set; } = String.Empty;
         public int userId { get; set; } = 0;
+        public int washerUserId { get; set; } = 0;
         public int washTypeId { get; set; } = 0;
 
 

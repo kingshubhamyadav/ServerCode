@@ -35,7 +35,6 @@ namespace OnDemandCarWash.Controllers
         }
 
         [HttpGet("OurServices")]
-        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<WashTypeDto>> OurServices()
         {
             try
@@ -55,12 +54,11 @@ namespace OnDemandCarWash.Controllers
         }
         //check whether the promocode is valid or not and return discount value
         [HttpPost("CheckPromocode")]
-        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<Promocode>> GetCoupen(PromocodeDto request)
         {
             try
             {
-                var coupenUsed = await _context.Orders.Where(x => x.userId == 1).FirstOrDefaultAsync(x => x.code == request.code);//take user from header token
+                var coupenUsed = await _context.Orders.Where(x => x.userId == request.userId).FirstOrDefaultAsync(x => x.code == request.code);//take user from header token
                 if (coupenUsed == null)// coupen have not been used before
                 {
                     var coupen = await _context.Promocodes.FirstOrDefaultAsync(x => x.code == request.code);
@@ -70,11 +68,11 @@ namespace OnDemandCarWash.Controllers
                         {
                             return Ok(coupen.discount);
                         }
-                        return BadRequest("Invalid Coupon");
+                        return BadRequest("Invalid Co");
                     }
-                    return BadRequest("Invalid Coupon");
+                    return BadRequest("Invalid Coupen");
                 }
-                return BadRequest("Coupon Have Been Used Before");
+                return BadRequest("Coupen Have Been Used Before");
             }
             catch (Exception ex)
             {
@@ -87,7 +85,6 @@ namespace OnDemandCarWash.Controllers
 
         //stores all the details after payment (order table details + paymentDetais table)
         [HttpPost("StoreOrderDetail")]
-        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<Order>> StoreOrderDetail(OrderDto request)
         {
             var order = new Order();
@@ -96,35 +93,33 @@ namespace OnDemandCarWash.Controllers
             order.dateOfWash = request.dateOfWash;
             order.location = request.location;
             order.userId = request.userId;
-            order.washerUserId = -1;
+            order.washerUserId = request.washerUserId;
+            order.washTypeId = request.washTypeId;
             order.rating = "null";
             order.code = request.code;//promocode
             order.orderStatus = OrderStatus.PENDING.ToString();
-            order.timeStamp = DateTime.Now.ToString();
-            order.washTypeId = request.washTypeId;
 
             try
             {
                 await _context.Orders.AddAsync(order);
                 await _context.SaveChangesAsync();
-                var orderId = _context.Orders.Where(x => x.timeStamp == order.timeStamp && x.dateOfWash == order.dateOfWash && x.timeOfWash == order.timeOfWash && x.userId == order.userId).SingleOrDefault().orderId;
-                
+
+
                 // Save Car Details
-                if (!SaveCarDetail(request.carNumber, request.carType, request.carImg, orderId))
+                if (!SaveCarDetail(request.carNumber, request.carType, request.carImg, order.orderId))
                 {
                     return BadRequest("Something went wrong in car details");
                 }
-                
-                // Save payment details
-                if (!SavePaymentDetail(request.amountPaid, request.totalDiscount, orderId))
+                // save payment details
+                if (!SavePaymentDetail(request.amountPaid, request.totalDiscount, order.orderId))
                 {
-                    return BadRequest("Something went wrong in payment");
+                    return BadRequest("something went wrong in payment");
                 }
+
                 return Ok(order);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception occurred at StoreOrderDetail in CustomerRepo");
                 return BadRequest(ex);
             }
 
@@ -132,61 +127,60 @@ namespace OnDemandCarWash.Controllers
         //saving payment details 
         private bool SavePaymentDetail(string amountPaid, string totalDiscount, int orderId)
         {
-            var pay = new PaymentDetail();
-            pay.orderId = orderId;
-            pay.amountPaid = amountPaid;
-            pay.totalDiscount = totalDiscount;
-            pay.paymentStatus = PaymentStatus.Success.ToString();
-            pay.timeStamp = DateTime.Now.ToString();
             try
             {
+                var pay = new PaymentDetail();
+                pay.orderId = orderId;
+                pay.amountPaid = amountPaid;
+                pay.totalDiscount = totalDiscount;
+                pay.paymentStatus = PaymentStatus.Success.ToString();
+                pay.timeStamp = DateTime.Now.ToString();
                 _context.PaymentDetails.AddAsync(pay);
                 _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex) //make custom exception
             {
-                Console.WriteLine("Error in payment details in Checkout");
                 return false;
             }
         }
         // saving car details
         private bool SaveCarDetail(string carNumber, string carType, string carImg, int orderId)
         {
-            var car = new CarDetail();
-            car.orderId = orderId;
-            car.carNumber = carNumber;
-            car.carType = carType;
-            car.carImg = carImg;
-            car.timeStamp = DateTime.Now.ToString();
             try
             {
+                var car = new CarDetail();
+                car.orderId = orderId;
+                car.carNumber = carNumber;
+                car.carType = carType;
+                car.carImg = carImg;
+
                 _context.carDetails.AddAsync(car);
                 _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex) //make custom exception
             {
-                Console.WriteLine("Error in adding car details");
                 return false;
             }
         }
 
-        [HttpGet("OrderHistory/{id}")]
-        [Authorize(Roles = "Customer")]
-        public async Task<IEnumerable<OrderHistoryDto>> OrderHistory(int id)
+        [HttpGet("OrderHistory")]
+        public async Task<IEnumerable<OrderHistoryDto>> OrderHistory(int userId)
         {
             try
             {
-                var orders = await _context.Orders.Where(x => x.userId == id)
+                var orders = await _context.Orders.Where(x => x.userId == userId)
                    .Select(p => new OrderHistoryDto()
                    {
+                       orderIdInPayment = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).orderId,
                        timeOfWash = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).timeOfWash,
                        dateOfWash = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).dateOfWash,
                        location = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).location,
                        code = _context.Orders.SingleOrDefault(x => x.orderId == p.orderId).code,
                        amountPaid = _context.PaymentDetails.SingleOrDefault(x => x.orderId == p.orderId).amountPaid,
-                       totalDiscount = _context.PaymentDetails.SingleOrDefault(x => x.orderId == p.orderId).totalDiscount
+                       totalDiscount = _context.PaymentDetails.SingleOrDefault(x => x.orderId == p.orderId).totalDiscount,
+
                    }).ToListAsync();
 
                 if (orders == null)
@@ -202,7 +196,6 @@ namespace OnDemandCarWash.Controllers
         }
 
         [HttpGet("GetWasher")]
-        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<OrderDto>> GetWasher()
         {
             try
@@ -219,6 +212,22 @@ namespace OnDemandCarWash.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("GetPaymentDetails")] //for invoice
+        public async Task<ActionResult<PaymentDetail>> GetPaymentDetails(int orderId)
+        {
+            try
+            {
+                var pay = await _context.PaymentDetails.Where(x => x.orderId == orderId).ToListAsync();
+                return Ok(pay);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+
         }
 
         [HttpPut("edit-profile/{id}")]

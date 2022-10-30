@@ -5,6 +5,8 @@
         public string timeOfWash { get; set; } = String.Empty;
         public string dateOfWash { get; set; } = String.Empty;
         public string location { get; set; } = String.Empty;
+        public int orderIdInPayment { get; set; } = 0;
+
         public string code { get; set; } = String.Empty;
 
         //Payment details

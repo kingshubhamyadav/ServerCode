@@ -80,7 +80,7 @@ namespace OnDemandCarWash.Controllers
             }
         }
 
-        //register
+        //login
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserDto request)
         {
@@ -112,12 +112,15 @@ namespace OnDemandCarWash.Controllers
         private string CreateToken(User user)
         {
             string userId = user.userId.ToString();
+            string Username = user.firstName.ToString() + ' ' + user.lastName.ToString();
+            string email = user.email.ToString();
+            string phone = user.phone.ToString();
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name,user.Username),
+                new Claim(ClaimTypes.Name,Username),
                 new Claim(ClaimTypes.Role,user.role),
-                new Claim(ClaimTypes.Email,user.email),
-                new Claim(ClaimTypes.MobilePhone,user.phone),
+                new Claim(ClaimTypes.Email,email),
+                new Claim(ClaimTypes.MobilePhone,phone),
                 new Claim(ClaimTypes.UserData,userId),
             };
             //install this package- Microsoft.IdentityModel.Tokens;
@@ -138,6 +141,86 @@ namespace OnDemandCarWash.Controllers
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
+
+
+        // register for admin
+        //Register
+        [HttpPost("AdminRegister")]
+        public async Task<ActionResult<Admin>> adminRegister(AdminAuthDto request)
+        {
+
+            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var checkUserName = await _context.Users.FirstOrDefaultAsync(x => x.Username == request.Username);
+            if (checkUserName == null)
+            {
+                var user = new Admin();
+                user.Username = request.Username;
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;     
+
+                await _context.Admins.AddAsync(user);
+                await _context.SaveChangesAsync();
+                return Ok(user);
+            }
+            else
+            {
+                return BadRequest("User Name allready taken");
+            }
+
+        }
+        //login for admin
+        [HttpPost("adminLogin")]
+        public async Task<ActionResult<string>> adminLogin(AdminAuthDto request)
+        {
+            var users = await _context.Admins.FirstOrDefaultAsync(x => x.Username == request.Username);
+            if (users == null)
+            {
+                return BadRequest("User not found");
+            }
+            if (!VerifyPasswordHash(request.Password, users.PasswordHash, users.PasswordSalt))
+            {
+                return BadRequest("wrong password");
+            }
+
+            // token will be passed
+            string token = CreateTokenAdmin(users);
+            return Ok(token);
+        }
+
+        
+        // Create Token 
+        private string CreateTokenAdmin(Admin user)
+        {
+            string userId = user.userId.ToString();
+     
+            List<Claim> claims = new List<Claim>
+            {
+                
+                new Claim(ClaimTypes.Role,Role.Admin.ToString()),
+                new Claim(ClaimTypes.UserData,userId),
+            };
+            //install this package- Microsoft.IdentityModel.Tokens;
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value));
+
+            // add credientials
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            //create token
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddHours(12),
+                signingCredentials: creds
+                );
+
+            // string we want form the token
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+        }
+
+
+
 
     }
 }

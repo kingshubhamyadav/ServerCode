@@ -6,8 +6,9 @@ namespace OnDemandCarWash.Models
     {
 
         [Key]
-        public string userId { get; set; }
-        public string userName { get; set; }
-        public string password { get; set; }
+        public int userId { get; set; }
+        public string Username { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
     }
 }
