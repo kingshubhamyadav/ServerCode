@@ -322,38 +322,38 @@ namespace OnDemandCarWash.Controllers
             }
         }
 
-        //leaders board
-        //[HttpGet("LeadersBoard")]
-        //public async Task<IEnumerable<LeadersBoardDto>> LeadersBoard()
-        //{
-        //    try
-        //    {
+       // leaders board
+        [HttpGet("LeadersBoard")]
+        public async Task<IEnumerable<LeadersBoardDto>> LeadersBoard()
+        {
+            try
+            {
 
-        //        var washers = await _context.Users.Where(x => x.role == "Washer").ToListAsync();
-        //        var wash = await _context.afterWashes.Where(x => x.orderId != 0)
-        //         .Select(p => new LeadersBoardDto()
-        //         {
+                var washers = await _context.Users.Where(x => x.role == "Washer").ToListAsync();
+                var wash = await _context.afterWashes.Where(x => x.orderId != 0)
+                 .Select(p => new LeadersBoardDto()
+                 {
 
-        //             userId = _context.Users.SingleOrDefault(x => x.userId == p.userId).userId,
-        //             firstName = _context.Users.SingleOrDefault(x => x.userId == p.userId).firstName,
-        //             lastName = _context.Users.SingleOrDefault(x => x.userId == p.userId).lastName,
-        //             email = _context.Users.SingleOrDefault(x => x.userId == p.userId).email,
-        //             waterUsed = _context.afterWashes.SingleOrDefault(x => x.userId == p.userId).waterUsed,
+                     userId = _context.Users.SingleOrDefault(x => x.userId == p.userId).userId,
+                     firstName = _context.Users.SingleOrDefault(x => x.userId == p.userId).firstName,
+                     lastName = _context.Users.SingleOrDefault(x => x.userId == p.userId).lastName,
+                     email = _context.Users.SingleOrDefault(x => x.userId == p.userId).email,
+                     waterUsed = _context.afterWashes.SingleOrDefault(x => x.userId == p.userId).waterUsed,
 
-        //         }).ToListAsync();
+                 }).ToListAsync();
 
-        //        return wash;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("Error occurred at leader's board");
-        //        return null;
-        //    }
-        //    finally
-        //    {
+                return wash;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occurred at leader's board");
+                return null;
+            }
+            finally
+            {
 
-        //    }
-        //}
+            }
+        }
 
         //assign washer to order
         [HttpPost("accept-request")]

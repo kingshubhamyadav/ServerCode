@@ -151,7 +151,7 @@ namespace OnDemandCarWash.Controllers
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            var checkUserName = await _context.Users.FirstOrDefaultAsync(x => x.Username == request.Username);
+            var checkUserName = await _context.Admins.FirstOrDefaultAsync(x => x.Username == request.Username);
             if (checkUserName == null)
             {
                 var user = new Admin();
